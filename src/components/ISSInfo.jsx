@@ -29,6 +29,17 @@ const ISSInfo = ({ latitude, longitude, timestamp, velocity, altitude }) => {
           <p className="text-lg font-semibold text-gray-800">{formatTimestamp(timestamp)}</p>
         </div>
       </div>
+      <div className="mt-4">
+        <p className="text-sm font-medium text-gray-500">Trajectory Legend</p>
+        <div className="flex items-center mt-2">
+          <div className="w-4 h-4 bg-blue-500 mr-2"></div>
+          <p className="text-sm text-gray-700">Past Trajectory (1 hour)</p>
+        </div>
+        <div className="flex items-center mt-1">
+          <div className="w-4 h-4 bg-red-500 mr-2"></div>
+          <p className="text-sm text-gray-700">Future Trajectory (1 hour)</p>
+        </div>
+      </div>
     </div>
   );
 };

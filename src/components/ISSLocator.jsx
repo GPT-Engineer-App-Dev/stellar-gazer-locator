@@ -9,54 +9,68 @@ const fetchISSLocation = async () => {
   return response.data;
 };
 
-const ISSLocator = () => {
-  const [trajectory, setTrajectory] = useState([]);
+const fetchISSTrajectory = async () => {
+  const now = Math.floor(Date.now() / 1000);
+  const pastStart = now - 3600; // 1 hour ago
+  const futureEnd = now + 3600; // 1 hour in the future
+  const response = await axios.get(`https://api.wheretheiss.at/v1/satellites/25544/positions?timestamps=${pastStart},${now},${futureEnd}&units=kilometers`);
+  return response.data;
+};
 
-  const { data, isLoading, isError } = useQuery({
+const ISSLocator = () => {
+  const [pastTrajectory, setPastTrajectory] = useState([]);
+  const [futureTrajectory, setFutureTrajectory] = useState([]);
+
+  const { data: currentLocation, isLoading: isLoadingLocation, isError: isErrorLocation } = useQuery({
     queryKey: ['issLocation'],
     queryFn: fetchISSLocation,
     refetchInterval: 5000,
   });
 
-  useEffect(() => {
-    if (data) {
-      setTrajectory(prevTrajectory => {
-        const newTrajectory = [...prevTrajectory, [data.latitude, data.longitude]];
-        const updatedTrajectory = newTrajectory.slice(-20); // Keep only the last 20 positions
-        console.log('Updated trajectory:', updatedTrajectory); // Debug log
-        return updatedTrajectory;
-      });
-    }
-  }, [data]);
+  const { data: trajectoryData, isLoading: isLoadingTrajectory, isError: isErrorTrajectory } = useQuery({
+    queryKey: ['issTrajectory'],
+    queryFn: fetchISSTrajectory,
+    refetchInterval: 60000, // Refresh every minute
+  });
 
-  if (isLoading) {
+  useEffect(() => {
+    if (trajectoryData) {
+      const now = Math.floor(Date.now() / 1000);
+      const past = trajectoryData.filter(point => point.timestamp < now).map(point => [point.latitude, point.longitude]);
+      const future = trajectoryData.filter(point => point.timestamp >= now).map(point => [point.latitude, point.longitude]);
+      
+      setPastTrajectory(past);
+      setFutureTrajectory(future);
+    }
+  }, [trajectoryData]);
+
+  if (isLoadingLocation || isLoadingTrajectory) {
     return <div className="flex items-center justify-center h-screen">
       <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
     </div>;
   }
 
-  if (isError) {
-    return <div className="text-center py-10 text-red-500">Error fetching ISS location. Please try again later.</div>;
+  if (isErrorLocation || isErrorTrajectory) {
+    return <div className="text-center py-10 text-red-500">Error fetching ISS data. Please try again later.</div>;
   }
-
-  console.log('Current trajectory:', trajectory); // Debug log
 
   return (
     <div className="container mx-auto px-4 py-8 bg-gray-100 min-h-screen">
       <h1 className="text-5xl font-bold mb-8 text-center text-gray-800">Real-Time ISS Tracker</h1>
       <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
         <ISSMap 
-          latitude={parseFloat(data.latitude)} 
-          longitude={parseFloat(data.longitude)}
-          trajectory={trajectory}
+          latitude={parseFloat(currentLocation.latitude)} 
+          longitude={parseFloat(currentLocation.longitude)}
+          pastTrajectory={pastTrajectory}
+          futureTrajectory={futureTrajectory}
         />
       </div>
       <ISSInfo
-        latitude={data.latitude}
-        longitude={data.longitude}
-        timestamp={data.timestamp}
-        velocity={data.velocity}
-        altitude={data.altitude}
+        latitude={currentLocation.latitude}
+        longitude={currentLocation.longitude}
+        timestamp={currentLocation.timestamp}
+        velocity={currentLocation.velocity}
+        altitude={currentLocation.altitude}
       />
     </div>
   );

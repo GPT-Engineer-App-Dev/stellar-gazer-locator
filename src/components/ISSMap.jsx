@@ -1,34 +1,27 @@
 import React from 'react';
-import { ComposableMap, Geographies, Geography, Marker } from 'react-simple-maps';
-
-const geoUrl = "https://raw.githubusercontent.com/deldersveld/topojson/master/world-countries.json";
+import WorldMap from 'react-svg-worldmap';
 
 const ISSMap = ({ latitude, longitude }) => {
+  const data = [
+    { country: 'ISS', value: 1, coordinates: [longitude, latitude] }
+  ];
+
   return (
-    <ComposableMap
-      projection="geoEqualEarth"
-      projectionConfig={{
-        scale: 200,
-      }}
-      className="w-full h-[400px] md:h-[600px]"
-    >
-      <Geographies geography={geoUrl}>
-        {({ geographies }) =>
-          geographies.map((geo) => (
-            <Geography
-              key={geo.rsmKey}
-              geography={geo}
-              fill="#EAEAEC"
-              stroke="#D6D6DA"
-              strokeWidth={0.5}
-            />
-          ))
-        }
-      </Geographies>
-      <Marker coordinates={[longitude, latitude]}>
-        <circle r={8} fill="#E74C3C" stroke="#fff" strokeWidth={2} />
-      </Marker>
-    </ComposableMap>
+    <div className="w-full h-[400px] md:h-[600px] bg-gray-100">
+      <WorldMap
+        color="lightblue"
+        valueSuffix="ISS"
+        size="responsive"
+        data={data}
+        styleFunction={() => ({
+          fill: '#ECEFF1',
+          stroke: '#607D8B',
+          strokeWidth: 0.5,
+          strokeOpacity: 0.2,
+          cursor: 'pointer'
+        })}
+      />
+    </div>
   );
 };
 

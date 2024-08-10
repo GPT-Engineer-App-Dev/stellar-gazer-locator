@@ -1,13 +1,12 @@
 import React from 'react';
 import { ComposableMap, Geographies, Geography, Marker } from 'react-simple-maps';
-import { geoEqualEarth } from 'd3-geo';
 
-const geoUrl = 'https://raw.githubusercontent.com/deldersveld/topojson/master/world-countries.json';
+const geoUrl = "https://raw.githubusercontent.com/deldersveld/topojson/master/world-countries.json";
 
 const ISSMap = ({ latitude, longitude }) => {
   return (
     <ComposableMap
-      projection={geoEqualEarth()}
+      projection="geoEqualEarth"
       projectionConfig={{
         scale: 200,
       }}
@@ -19,8 +18,8 @@ const ISSMap = ({ latitude, longitude }) => {
             <Geography
               key={geo.rsmKey}
               geography={geo}
-              fill="#2C3E50"
-              stroke="#EAEAEC"
+              fill="#EAEAEC"
+              stroke="#D6D6DA"
               strokeWidth={0.5}
             />
           ))

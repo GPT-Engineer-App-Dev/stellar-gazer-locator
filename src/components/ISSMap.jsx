@@ -9,7 +9,7 @@ const ISSMap = ({ latitude, longitude }) => {
   return (
     <div className="w-full h-[400px] md:h-[600px] bg-gray-100">
       <WorldMap
-        color="lightblue"
+        color="red"
         valueSuffix="ISS"
         size="responsive"
         data={data}
@@ -20,6 +20,12 @@ const ISSMap = ({ latitude, longitude }) => {
           strokeOpacity: 0.2,
           cursor: 'pointer'
         })}
+        pointStyles={{
+          fill: 'red',
+          stroke: '#FFFFFF',
+          strokeWidth: 2,
+          r: 6  // Increase the radius of the point
+        }}
       />
     </div>
   );

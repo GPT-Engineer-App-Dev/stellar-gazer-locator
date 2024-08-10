@@ -22,7 +22,9 @@ const ISSLocator = () => {
     if (data) {
       setTrajectory(prevTrajectory => {
         const newTrajectory = [...prevTrajectory, [data.latitude, data.longitude]];
-        return newTrajectory.slice(-20); // Keep only the last 20 positions
+        const updatedTrajectory = newTrajectory.slice(-20); // Keep only the last 20 positions
+        console.log('Updated trajectory:', updatedTrajectory); // Debug log
+        return updatedTrajectory;
       });
     }
   }, [data]);
@@ -36,6 +38,8 @@ const ISSLocator = () => {
   if (isError) {
     return <div className="text-center py-10 text-red-500">Error fetching ISS location. Please try again later.</div>;
   }
+
+  console.log('Current trajectory:', trajectory); // Debug log
 
   return (
     <div className="container mx-auto px-4 py-8 bg-gray-100 min-h-screen">

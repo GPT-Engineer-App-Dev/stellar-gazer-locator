@@ -23,6 +23,8 @@ const ISSMap = ({ latitude, longitude, trajectory }) => {
   const position = [latitude, longitude];
   const mapRef = useRef();
 
+  console.log('Rendering map with trajectory:', trajectory); // Debug log
+
   return (
     <div className="w-full h-[600px] rounded-lg overflow-hidden shadow-lg">
       <MapContainer center={position} zoom={3} ref={mapRef} className="h-full">
@@ -35,7 +37,9 @@ const ISSMap = ({ latitude, longitude, trajectory }) => {
             ISS is here!<br />Latitude: {latitude.toFixed(4)}<br />Longitude: {longitude.toFixed(4)}
           </Popup>
         </Marker>
-        <Polyline positions={trajectory} color="red" weight={2} opacity={0.7} />
+        {trajectory.length > 1 && (
+          <Polyline positions={trajectory} color="red" weight={2} opacity={0.7} />
+        )}
         <SetViewOnChange coords={position} />
       </MapContainer>
     </div>

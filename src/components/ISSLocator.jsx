@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import axios from 'axios';
 import ISSMap from './ISSMap';
 import ISSInfo from './ISSInfo';
 import { useQuery } from '@tanstack/react-query';
 
 const fetchISSLocation = async () => {
-  const response = await axios.get('http://api.open-notify.org/iss-now.json');
+  const response = await axios.get('https://api.wheretheiss.at/v1/satellites/25544');
   return response.data;
 };
 
@@ -21,22 +21,22 @@ const ISSLocator = () => {
   }
 
   if (isError) {
-    return <div className="text-center py-10 text-red-500">Error fetching ISS location</div>;
+    return <div className="text-center py-10 text-red-500">Error fetching ISS location. Please try again later.</div>;
   }
-
-  const { latitude, longitude } = data.iss_position;
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">Real-Time ISS Locator</h1>
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-        <ISSMap latitude={parseFloat(latitude)} longitude={parseFloat(longitude)} />
+        <ISSMap latitude={data.latitude} longitude={data.longitude} />
       </div>
       <div className="mt-8">
         <ISSInfo
-          latitude={parseFloat(latitude)}
-          longitude={parseFloat(longitude)}
+          latitude={data.latitude}
+          longitude={data.longitude}
           timestamp={data.timestamp}
+          velocity={data.velocity}
+          altitude={data.altitude}
         />
       </div>
     </div>

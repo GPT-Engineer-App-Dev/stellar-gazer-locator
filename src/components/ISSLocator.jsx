@@ -24,8 +24,6 @@ const ISSLocator = () => {
     return <div className="text-center py-10 text-red-500">Error fetching ISS location. Please try again later.</div>;
   }
 
-  console.log('ISS Location:', data.latitude, data.longitude);
-
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">Real-Time ISS Locator</h1>
